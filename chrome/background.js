@@ -1,35 +1,16 @@
-/*
-chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
-     sendServiceRequest(response.data);
-  });
-});
 
-function sendServiceRequest(selectedText) {
-  var serviceCall = 'http://www.google.com/search?q=' + selectedText;
-  chrome.tabs.create({url: serviceCall});
-}
-*/
 
 function getImageClickHandler() {
   return function(info, tab) {
-    $.get( "https://httpbin.org/get", function( data ) {
-        requestId = data["origin"]
-        var url = 'imageVerify.html#' + requestId;
-        chrome.windows.create({ url: url, width: 520, height: 660 });
-    });
+    // TODO
   };
 };
 
 function getSelectedTextHandler() {
   return function(info, tab) {
-      $.get( "https://httpbin.org/get", function( data ) {
-        requestId = data["origin"]
-                console.info(data)
-        chrome.windows.create({ url: "google.de", width: 520, height: 660 });
-        var url = 'textVerify.html#' + requestId;
-        chrome.windows.create({ url: url, width: 520, height: 660 });
-      });
+    var query = {"text": info.selectionText}
+    var url = "verify.html?" + $.param( query )
+    chrome.windows.create({ url: url, width: 400, height: 300, type: "popup" });
   };
 };
 
