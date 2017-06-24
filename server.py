@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, make_response
-from utils import check_virality, compare_tweet_with_storage
+from utils import check_virality, compare_tweet_with_storage, check_info_source
 
 app = Flask(__name__)
 
@@ -20,9 +20,10 @@ def process_text():
         tweet = request.json['text'] if 'text' in request.json else None
         url = request.json['pageUrl'] if 'pageUrl' in request.json else None
 
-        share, total_engaged = None, None
+        share, total_engaged, resource_trust = None, None, None
         if url:
             comments, reaction, share, total_engaged = check_virality(url)
+            resource_trust = check_info_source(url)
 
         analysis_result = None
         if tweet:
@@ -33,7 +34,8 @@ def process_text():
             'data': {
                 'credibility': analysis_result,
                 'engaged': total_engaged,
-                'shares': share
+                'shares': share,
+                'site_credibility': resource_trust
             },
             'source_text': tweet
         }
