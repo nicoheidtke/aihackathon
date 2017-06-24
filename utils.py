@@ -29,11 +29,12 @@ def read_csv_with_tweets(filename, regenerate=False):
     return df_storage
 
 def transform_tweet(tweet):
-    twprep.clean(tweet)
-    parsedEx = parser(tweet)
-
-
-    #TODO: remove stop words, handle, de-hashtag
+    tweet = twprep.clean(tweet)
+    parsedEx = parser(tweet.decode())
+    tokens = [token.text for token in parsedEx if token.text not in config.STOPLIST and token.text not in config.SYMBOLS]
+    tweet = " ".join(tokens)
+    parsedEx = parser(tweet.decode())
+    #TODO: handle, de-hashtag
     out_vector = parsedEx.vector
     entities = list(parsedEx.ents)
     output = [((entity.text, entity.label_, out_vector)) for entity in entities]
@@ -76,8 +77,8 @@ def iterate_over_csv_and_put_into_storage(df_input):
 
 
 if __name__ == '__main__':
-    tweet_to_check = u"Donald Trump was murdered yesterday!"
-    regenerate = False
+    tweet_to_check = u"Donald Trump was murdered yesterday by his wife's fighting frog!"
+    regenerate = True
     df_storage = read_csv_with_tweets(os.path.join(config.data_folder, config.tweets_filename), regenerate=regenerate)
     scores = compare_tweet_with_storage(tweet_to_check, df_storage)
     print(scores)
