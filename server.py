@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from utils import compare_tweet_with_storage, check_virality
-from utils import
+from utils import check_virality, compare_tweet_with_storage
 from urlparse import urlparse
 
 app = Flask(__name__)
