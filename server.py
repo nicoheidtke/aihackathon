@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from utils import check_virality, compare_tweet_with_storage, check_info_source
+from images import check_url
 
 app = Flask(__name__)
 
@@ -44,6 +45,28 @@ def process_text():
         return make_response(jsonify({'status': STATUS_ERROR, 'message': 'malformed request'}), 400)
     # except:
     #     return make_response(jsonify({'status': STATUS_ERROR, 'message': 'oops...'}), 500)
+
+
+@app.route("/process_image", methods=['POST'])
+def process_image():
+    try:
+        assert request.is_json
+        assert 'imageUrl' in request.json
+
+        image_url = request.json['imageUrl']
+        found_trusted_url = None
+        trusted_data = check_url(image_url)
+        if 'image_url' in trusted_data:
+            found_trusted_url = trusted_data.image_url
+
+        result = {
+            'status': STATUS_OK,
+            'found_trusted_url': found_trusted_url,
+            'source_url': image_url
+        }
+        return jsonify(result)
+    except AssertionError:
+        return make_response(jsonify({'status': STATUS_ERROR, 'message': 'malformed request'}), 400)
 
 
 if __name__ == '__main__':
