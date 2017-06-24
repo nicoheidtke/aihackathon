@@ -7,7 +7,7 @@ from scipy.spatial.distance import cosine
 import sys
 from spacy.en import English
 import preprocessor as twprep
-twprep.set_options(twprep.OPT.URL, twprep.OPT.MENTION, twprep.OPT.RESERVED, twprep.OPT.SMILEY, twprep.OPT.EMOJI)
+twprep.set_options(twprep.OPT.URL, twprep.OPT.HASHTAG, twprep.OPT.MENTION, twprep.OPT.RESERVED, twprep.OPT.SMILEY, twprep.OPT.EMOJI)
 
 import config
 
@@ -34,6 +34,7 @@ def transform_tweet(tweet):
     tokens = [token.text for token in parsedEx if token.text not in config.STOPLIST and token.text not in config.SYMBOLS]
     tweet = " ".join(tokens)
     parsedEx = parser(tweet.decode())
+    print(parsedEx)
     #TODO: handle, de-hashtag
     out_vector = parsedEx.vector
     entities = list(parsedEx.ents)
