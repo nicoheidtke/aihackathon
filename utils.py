@@ -1,4 +1,5 @@
 # encoding=utf8
+from credentials import FB_TOKEN
 import pandas as pd
 import numpy as np
 import os
@@ -110,6 +111,24 @@ def iterate_over_csv_and_put_into_storage(df_input, bow=False):
         except:
             print('Failed to process twitt: {0}, {1}'.format(i, tweet_id))
     return storage_df
+
+import requests
+
+
+def check_virality(url):
+
+    if url[-1]=='/':
+        return -1,-1,-1,-1
+
+    str =  "https://graph.facebook.com/v2.9/?id="+url+"&fields=engagement&access_token="+FB_TOKEN
+    res = requests.get(str)
+    out = res.json()
+    comments =out['engagement']['comment_count'] + out['engagement']['comment_plugin_count']
+    reaction =  out['engagement']['reaction_count']
+    share = out['engagement']['share_count']
+    total_engaged = comments+reaction+share
+
+    return comments, reaction, share, total_engaged
 
 
 if __name__ == '__main__':
