@@ -121,8 +121,11 @@ def fast_search_db(filename):
         print '[FAIL]:{}', res.text[:min(30,len(res.text))]
         print res.text
         result = [[]]
-    result = np.array(result)
 
+    if not len(result):
+        return None
+
+    result = np.array(result)
     tmpdf = pd.DataFrame(result, columns=['imgid', 'similarity'])
     tmpdf.sort_values(['similarity'], inplace=True)
     imgid = int(tmpdf.iloc[0]['imgid'])

@@ -56,7 +56,7 @@ def process_image():
         image_url = request.json['imageUrl']
         found_trusted_url = None
         trusted_data = check_url(image_url)
-        if 'image_url' in trusted_data:
+        if trusted_data is not None and 'image_url' in trusted_data:
             found_trusted_url = trusted_data.image_url
 
         result = {
