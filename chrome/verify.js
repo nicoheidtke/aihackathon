@@ -43,6 +43,12 @@ function getRandomInt(min, max) {
 
 function verifySuccess(data) {
     var scores = data.data;
+
+    var site_cred = scores.site_credibility;
+    if (site_cred <= 0) {
+        $("#site_alert").show();
+    }
+
     var credibility = scores.credibility.toFixed(2);
     if (credibility <= 0) {
         $("#status_message").text("Truthiness calculation has insufficient data");
@@ -104,6 +110,7 @@ function verify(query) {
 function on_dom_loaded(event) {
     $("#closeButton").click( function(){ self.close(); } );
 
+
     var pageUrl = getUrlParameter("pageUrl");
     var query = {"pageUrl": pageUrl} 
     var text = getUrlParameter("text");
@@ -112,8 +119,9 @@ function on_dom_loaded(event) {
         query["text"] = text
     }
     if (image != null) {
-        image["text"] = image
+        query["image"] = image
     }
+    $("#source_url").text(pageUrl);
     verify(query);
 };
 
