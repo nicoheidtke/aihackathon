@@ -3,9 +3,46 @@
   <head>
     <title>Text analysis</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="verify.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-      <div id="text_result">Processing, please wait ...<div>
+    <div class="container" role="main" >
+      <div id="status_alert" class="alert alert-info">
+        <strong id="status_message">Verification in progess. Please wait</strong>
+        <p><h5 id="error_message"></h5></p>
+      </div>
+      <div class="row">
+        <div class="col-xs-6"  >
+          <div class="panel panel-primary"  >
+            <div class="panel-heading"  >
+              <h3 class="panel-title" >Test score</h3>
+            </div>
+            <div class="panel-body"  >
+              <h2><span id="score_text" class="label label-default"></span></h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-6"  >
+          <div class="panel panel-primary"  >
+            <div class="panel-heading"  >
+              <h3 class="panel-title" >Image score</h3>
+            </div>
+            <div class="panel-body">
+              <h2><span id="score_image" class="label label-default"></span></h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary">True</button>
+        <button class="btn btn-warning">False</button>
+      </div>
+    </div>
   </body>
 </html>

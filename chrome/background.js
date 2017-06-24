@@ -2,15 +2,17 @@
 
 function getImageClickHandler() {
   return function(info, tab) {
-    // TODO
+    var query = {"image": info.selectionText, "pageUrl": info.pageUrl}
+    var url = "verify.html?" + $.param( query )
+    chrome.windows.create({ url: url, width: 400, height: 300, type: "popup" });
   };
 };
 
 function getSelectedTextHandler() {
   return function(info, tab) {
-    var query = {"text": info.selectionText}
+    var query = {"text": info.selectionText, "pageUrl": info.pageUrl}
     var url = "verify.html?" + $.param( query )
-    chrome.windows.create({ url: url, width: 400, height: 300, type: "popup" });
+    chrome.windows.create({ url: url, width: 500, height: 400, type: "popup" });
   };
 };
 
