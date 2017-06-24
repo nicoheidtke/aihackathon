@@ -42,8 +42,8 @@ def process_text():
         return jsonify(result)
     except AssertionError:
         return make_response(jsonify({'status': STATUS_ERROR, 'message': 'malformed request'}), 400)
-    except:
-        return make_response(jsonify({'status': STATUS_ERROR, 'message': 'oops...'}), 500)
+    # except:
+    #     return make_response(jsonify({'status': STATUS_ERROR, 'message': 'oops...'}), 500)
 
 
 if __name__ == '__main__':
