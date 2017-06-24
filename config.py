@@ -12,4 +12,4 @@ model_file = 'model.pkl'
 # A custom stoplist
 STOPLIST = set(stopwords.words('english') + ["'s", "'m", "ca"] + list(ENGLISH_STOP_WORDS))
 # List of symbols we don't care about
-SYMBOLS = set([x for x in string.punctuation] + ["-----", "---", "...", "'ll", "'s", "’s", "’m"])
+SYMBOLS = set([x for x in string.punctuation] + ["-----", "---", "...", "'ll", "'s", "’s", "’m", "“", "”", u'\u201c', u'\u201d'])
