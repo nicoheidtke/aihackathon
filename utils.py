@@ -64,8 +64,12 @@ def combine_scores(scores_dict):
         output = 0
     else:
         output = sorted(scores_dict.values())[::-1]
-        nans = [ind[0] for ind in np.where(np.isnan(output) ==1)]
-        for nanindex in nans:
+        nans = [ind for ind in np.where(np.isnan(output) ==1)]
+        nn = []
+        for nanid in nans:
+            if nanid.shape[0]:
+                nn.append(nanid[0])
+        for nanindex in nn:
             del output[nanindex]
         if len(output):
             output = output[0]
@@ -86,13 +90,13 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
         temp_score = 0
         for j, (tweetid, item) in enumerate(storage[storage['Entity'] == entity].iterrows()):
             if bow:
-                clusterids = np.unique(vector_array.keys(), item['Vector array'].keys())[0]
-                vector1 = np.zeros(clusterids.shape[0])
-                vector2 = np.zeros(clusterids.shape[0])
+                clusterids = np.unique([vector_array.keys() + item['Vector array'].keys()])
+                vector1 = np.zeros([len(clusterids)])
+                vector2 = np.zeros([len(clusterids)])
                 for k, cid in enumerate(clusterids):
                     vector1[k] = vector_array.get(cid, 0)
                     vector2[k] = item['Vector array'].get(cid, 0)
-                temp_score = np.max([1 - cosine(vector1, vector2), temp_score])
+                temp_score = np.max([1.0 * np.sum(np.logical_and(vector1, vector2)) / np.min([np.sum(vector1), np.sum(vector2)]), temp_score])
             else:
                 temp_score = np.max([1 - cosine(vector_array, item['Vector array']), temp_score])
                 print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(tweetid))
@@ -143,9 +147,9 @@ def check_virality(url):
 
 
 if __name__ == '__main__':
-    tweet_to_check = u'''A mob of about 150 people, some “rather drunk and aggressive young people,” went on a rampage in the city of Magdeburg in eastern Germany. The crowd threw bottles and stones in “a massive and targeted attack” that injured fifteen officers, local police said.'''
-    regenerate = False
-    bow = True
+    tweet_to_check = u'''Donald Trump is not fucking dead'''
+    regenerate = True
+    bow = False
     df_storage = read_csv_with_tweets(os.path.join(config.data_folder, config.tweets_filename), regenerate=regenerate, bow=bow)
     scores = compare_tweet_with_storage(tweet_to_check, df_storage, bow=bow)
     print(scores)

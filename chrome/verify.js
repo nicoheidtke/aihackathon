@@ -1,3 +1,27 @@
+var truthinessMessages = {
+    0: [
+        "Did you know the earth is flat too?",
+    ],
+    1: [
+        "Believe on your risk."
+    ],
+    2: [
+        "The truth is usually boring."
+    ],
+    3: [
+        "You better believe it!",
+        "True as long as the pope is catholic."
+    ]
+};
+
+var truthinessClass = {
+    0: "alert-danger",
+    1: "alert-warning",
+    2: "alert-info",
+    3: "alert-success"
+};
+
+var truthinessArray = [0.5, 0.7, 0.9];
 
 function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -13,26 +37,50 @@ function getUrlParameter(sParam) {
     }
 };
 
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function verifySuccess(data) {
-    $("#score_text").text(data.data.credibility.toFixed(2));
-    if (data.credibility < 0.3) {
-        $("#score_text").toggleClass("label-default label-danger");
-    } else if (data.credibility < 0.5) {
-        $("#score_text").toggleClass("label-default label-warning");
-    } else if (data.credibility < 0.7) {
-        $("#score_text").toggleClass("label-default label-info");
-    } else {
-        $("#score_text").toggleClass("label-default label-success");
+    var scores = data.data;
+    var credibility = scores.credibility.toFixed(2);
+    if (credibility <= 0) {
+        $("#status_message").text("Truthiness calculation has insufficient data");
+        $("#status_alert").toggleClass("alert-info alert-default");
+        $("#score_truthiness").text("not available");
+        return;
     }
-    $("#score_image").text("n/a");
-    $("#status_message").text("Verification results are in!");
+
+    $("#status_message").text("Truthiness results are in!");
     $("#status_alert").toggleClass("alert-info alert-success");
+    $("#score_truthiness").text(credibility);
+    var truthiness = 0;
+    for (truthiness = 0; truthiness < truthinessArray.length; truthiness++) {
+        if (truthinessArray[truthiness] > credibility)
+            break;
+    }
+    
+    var cls = truthinessClass[truthiness];
+    console.info(cls)
+    $("#score_truthiness").toggleClass("label-default " + cls);
+    //var msg = truthinessMessages[truthiness][getRandomInt(0, truthinessMessages[truthiness].length)];
+    //$("#score_message").text(msg);
+
+    var shares = scores.shares;
+    if (shares >= 0) {
+        $("#panel_shares").show()
+        $("#score_shares").text(shares);
+    }
+    var engaged = scores.engaged;
+    if (shares >= 0) {
+        $("#panel_engaged").show()
+        $("#score_engaged").text(engaged);
+    }
 };
 
 function verifyFail(status, msg) {
-    $("#score_text").text("error");
-    $("#score_image").text("error");
-    $("#status_message").text("Verification processs failed!");
+    $("#score_truthiness").text("error");
+    $("#status_message").text("Truthiness calculation failed!");
     $("#error_message").text(status + ": " + JSON.stringify(msg));
     $("#status_alert").toggleClass("alert-info alert-danger");
 };
@@ -54,6 +102,8 @@ function verify(query) {
 };
 
 function on_dom_loaded(event) {
+    $("#closeButton").click( function(){ self.close(); } );
+
     var pageUrl = getUrlParameter("pageUrl");
     var query = {"pageUrl": pageUrl} 
     var text = getUrlParameter("text");
@@ -69,3 +119,4 @@ function on_dom_loaded(event) {
 
 
 document.addEventListener("DOMContentLoaded", on_dom_loaded);
+
