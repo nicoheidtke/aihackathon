@@ -110,7 +110,7 @@ def iterate_over_csv_and_put_into_storage(df_input, bow=False):
 import requests
 TOKEN= ''
 
-def check_virality(url, TOKEN):
+def check_virality(url):
 
     if url[-1]=='/':
         return -1,-1,-1,-1

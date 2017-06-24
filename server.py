@@ -25,9 +25,6 @@ def process_text():
         comments, reaction, share, total_engaged =check_virality(url)
         analysis_result = compare_tweet_with_storage(tweet)
 
-        parsed_uri = urlparse(url)
-        domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
-
         result = {
             'status': STATUS_OK,
             'data': {
