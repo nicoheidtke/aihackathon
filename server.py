@@ -28,6 +28,7 @@ def process_text():
 
         analysis_result = None
         if tweet:
+            tweet = tweet if len(tweet) < 1000 else tweet[:1000]
             analysis_result = compare_tweet_with_storage(tweet)
 
         result = {

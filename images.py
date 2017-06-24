@@ -137,6 +137,10 @@ def check_url(url):
     urllib.urlretrieve(url, fname)
     print '[OK] {}'.format(url[:min(30, len(url))])
     match_index = fast_search_db(fname)
+
+    if match_index is None:
+        return None
+
     matched_data = tweet_imgs.iloc[match_index]
     return matched_data
 
