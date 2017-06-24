@@ -7,7 +7,7 @@ from scipy.spatial.distance import cosine
 import sys
 from spacy.en import English
 import preprocessor as twprep
-twprep.set_options(twprep.OPT.URL, twprep.OPT.MENTION, twprep.OPT.RESERVED)
+twprep.set_options(twprep.OPT.URL, twprep.OPT.MENTION, twprep.OPT.RESERVED, twprep.OPT.SMILEY)
 
 import config
 
