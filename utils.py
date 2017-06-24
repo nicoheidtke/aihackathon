@@ -7,6 +7,7 @@ from scipy.spatial.distance import cosine
 import sys
 from spacy.en import English
 import preprocessor as twprep
+twprep.set_options(twprep.OPT.URL, twprep.OPT.MENTION, twprep.OPT.RESERVED)
 
 import config
 
@@ -29,6 +30,7 @@ def read_csv_with_tweets(filename, regenerate=False):
 
 
 def transform_tweet(tweet):
+    twprep.clean(tweet)
     parsedEx = parser(tweet)
     #TODO: remove stop words, handle, de-hashtag
     out_vector = parsedEx.vector
@@ -46,7 +48,13 @@ def put_gt_tweet_in_storage(tweet, df, tweet_id=0):
     return df
 
 
-def compare_tweet_with_storage(tweet, storage):
+def compare_tweet_with_storage(tweet, storage=None):
+    if storage is None:
+        if not os.path.isfile(os.path.join(config.data_folder, config.model_file)):
+            raise('Model was not found!')
+        else:
+            storage = pickle.load(open(os.path.join(config.data_folder, config.model_file), 'rb'))
+
     transformed_tweet = transform_tweet(tweet)
     scores = {}
     for i, (entity, entity_type, vector_array) in enumerate(transformed_tweet):
