@@ -123,7 +123,7 @@ def check_info_source(url):
     sorces = pd.read_csv('sources.csv')
     untrusted_sources = sorces['url'].tolist()
 
-    return domain not in untrusted_sources
+    return int(domain not in untrusted_sources)
 
 def check_virality(url):
 
