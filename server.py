@@ -1,5 +1,8 @@
 from flask import Flask, jsonify, request, make_response
-from utils import compare_tweet_with_storage
+from utils import compare_tweet_with_storage, check_virality
+from utils import
+from urlparse import urlparse
+
 app = Flask(__name__)
 
 STATUS_OK = 'ok'
@@ -18,12 +21,19 @@ def process_text():
         assert 'text' in request.json
 
         tweet = request.json['text']
+        url = request.json['pageUrl']
+        comments, reaction, share, total_engaged =check_virality(url)
         analysis_result = compare_tweet_with_storage(tweet)
+
+        parsed_uri = urlparse(url)
+        domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
         result = {
             'status': STATUS_OK,
             'data': {
-                'credibility': analysis_result
+                'credibility': analysis_result,
+                'engaged': total_engaged,
+                'shares': share
             },
             'source_text': tweet
         }

@@ -80,6 +80,24 @@ def iterate_over_csv_and_put_into_storage(df_input):
         storage_df = put_gt_tweet_in_storage(tweet['text'].decode(), storage_df, tweet_id)
     return storage_df
 
+import requests
+TOKEN= ''
+
+def check_virality(url, TOKEN):
+
+    if url[-1]=='/':
+        return -1,-1,-1,-1
+
+    str =  "https://graph.facebook.com/v2.9/?id="+url+"&fields=engagement&access_token="+TOKEN
+    res = requests.get(str)
+    out = res.json()
+    comments =out['engagement']['comment_count'] + out['engagement']['comment_plugin_count']
+    reaction =  out['engagement']['reaction_count']
+    share = out['engagement']['share_count']
+    total_engaged = comments+reaction+share
+
+    return comments, reaction, share, total_engaged
+
 
 if __name__ == '__main__':
     tweet_to_check = u"Donald Trump was murdered yesterday by his wife's fighting frog!"
