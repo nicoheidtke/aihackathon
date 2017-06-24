@@ -50,7 +50,11 @@ def put_gt_tweet_in_storage(tweet, df, tweet_id=0):
     return df
 
 def combine_scores(scores_dict):
-    return sorted(scores_dict.values())[::-1][0]
+    if not len(scores_dict.values()):
+        output = 0
+    else:
+        output = sorted(scores_dict.values())[::-1][0]
+    return output
 
 def compare_tweet_with_storage(tweet, storage=None):
     if storage is None:
@@ -63,9 +67,9 @@ def compare_tweet_with_storage(tweet, storage=None):
     scores = {}
     for i, (entity, entity_type, vector_array) in enumerate(transformed_tweet):
         temp_score = 0
-        for j, (_, item) in enumerate(storage[storage['Entity'] == entity].iterrows()):
+        for j, (tweetid, item) in enumerate(storage[storage['Entity'] == entity].iterrows()):
             temp_score = np.max([1 - cosine(vector_array, item['Vector array']), temp_score])
-            print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(j))
+            print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(tweetid))
         scores.update({entity: temp_score})
     return combine_scores(scores)
 
@@ -79,7 +83,8 @@ def iterate_over_csv_and_put_into_storage(df_input):
 
 if __name__ == '__main__':
     tweet_to_check = u"Donald Trump was murdered yesterday by his wife's fighting frog!"
-    regenerate = True
+    tweet_to_check = u"stupid guy died!"
+    regenerate = False
     df_storage = read_csv_with_tweets(os.path.join(config.data_folder, config.tweets_filename), regenerate=regenerate)
     scores = compare_tweet_with_storage(tweet_to_check, df_storage)
     print(scores)
