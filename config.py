@@ -7,8 +7,8 @@ data_folder = 'data'
 tweets_filename = 'tweetz.csv'
 model_file = 'model.pkl'
 
-#
-# # A custom stoplist
-# STOPLIST = set(stopwords.words('english') + ["n't", "'s", "'m", "ca"] + list(ENGLISH_STOP_WORDS))
-# # List of symbols we don't care about
-# SYMBOLS = " ".join(string.punctuation).split(" ") + ["-----", "---", "..."]
+
+# A custom stoplist
+STOPLIST = set(stopwords.words('english') + ["n't", "'s", "'m", "ca"] + list(ENGLISH_STOP_WORDS))
+# List of symbols we don't care about
+SYMBOLS = " ".join(string.punctuation).split(" ") + ["-----", "---", "..."]
