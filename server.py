@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, request, make_response
-from utils import compare_tweet_with_storage, check_virality
 from utils import check_virality, compare_tweet_with_storage, check_info_source
-from urlparse import urlparse
 
 app = Flask(__name__)
 
@@ -18,13 +16,18 @@ def hello():
 def process_text():
     try:
         assert request.is_json
-        assert 'text' in request.json
 
-        tweet = request.json['text']
-        url = request.json['pageUrl']
-        comments, reaction, share, total_engaged =check_virality(url)
-        analysis_result = compare_tweet_with_storage(tweet)
-        resource_trust = check_info_source(url)
+        tweet = request.json['text'] if 'text' in request.json else None
+        url = request.json['pageUrl'] if 'pageUrl' in request.json else None
+
+        share, total_engaged, resource_trust = None, None, None
+        if url:
+            comments, reaction, share, total_engaged = check_virality(url)
+            resource_trust = check_info_source(url)
+
+        analysis_result = None
+        if tweet:
+            analysis_result = compare_tweet_with_storage(tweet)
 
         result = {
             'status': STATUS_OK,
@@ -39,8 +42,8 @@ def process_text():
         return jsonify(result)
     except AssertionError:
         return make_response(jsonify({'status': STATUS_ERROR, 'message': 'malformed request'}), 400)
-    except:
-        return make_response(jsonify({'status': STATUS_ERROR, 'message': 'oops...'}), 500)
+    # except:
+    #     return make_response(jsonify({'status': STATUS_ERROR, 'message': 'oops...'}), 500)
 
 
 if __name__ == '__main__':
