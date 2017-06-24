@@ -12,7 +12,7 @@ function getSelectedTextHandler() {
   return function(info, tab) {
     var query = {"text": info.selectionText, "pageUrl": info.pageUrl}
     var url = "verify.html?" + $.param( query )
-    chrome.windows.create({ url: url, width: 500, height: 400, type: "popup" });
+    chrome.windows.create({ url: url, width: 600, height: 400, type: "popup" });
   };
 };
 

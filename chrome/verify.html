@@ -18,30 +18,42 @@
         <p><h5 id="error_message"></h5></p>
       </div>
       <div class="row">
-        <div class="col-xs-6"  >
+        <div class="col-xs-4"  >
           <div class="panel panel-primary"  >
             <div class="panel-heading"  >
-              <h3 class="panel-title" >Test score</h3>
+              <h3 class="panel-title" >Score</h3>
             </div>
             <div class="panel-body"  >
-              <h2><span id="score_text" class="label label-default"></span></h2>
+              <h4><span id="score_truthiness" class="label label-default"></span></h2>
             </div>
           </div>
         </div>
-        <div class="col-xs-6"  >
-          <div class="panel panel-primary"  >
+        <div class="col-xs-4" >
+          <div id="panel_shares" class="panel panel-primary" hidden="hidden" >
             <div class="panel-heading"  >
-              <h3 class="panel-title" >Image score</h3>
+              <h3 class="panel-title" ># users shared</h3>
             </div>
             <div class="panel-body">
-              <h2><span id="score_image" class="label label-default"></span></h2>
+              <h4><span id="score_shares" class="label label-default"></span></h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-4"  >
+          <div id="panel_engaged" class="panel panel-primary" hidden="hidden" >
+            <div class="panel-heading"  >
+              <h3 class="panel-title" ># users engaged</h3>
+            </div>
+            <div class="panel-body">
+              <h4><span id="score_engaged" class="label label-default"></span></h2>
             </div>
           </div>
         </div>
       </div>
-      <div class="row">
-        <button class="btn btn-primary">True</button>
-        <button class="btn btn-warning">False</button>
+      <div>
+        <h4 id="score_message"><h4>
+      </div>
+      <div>
+        <button id="closeButton" class="btn btn-primary">Close</button>
       </div>
     </div>
   </body>

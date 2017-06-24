@@ -104,5 +104,6 @@ ENV/
 
 # secret credentials
 credentials.py
-*.csv
+
 *.pkl
+*.jpg

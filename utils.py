@@ -11,6 +11,8 @@ import preprocessor as twprep
 twprep.set_options(twprep.OPT.URL, twprep.OPT.HASHTAG, twprep.OPT.MENTION, twprep.OPT.RESERVED, twprep.OPT.SMILEY, twprep.OPT.EMOJI)
 reload(sys)
 import config
+from urlparse import urlparse
+
 sys.setdefaultencoding('utf8')
 parser = English()
 
@@ -150,6 +152,15 @@ def iterate_over_csv_and_put_into_storage(df_input, bow=False):
 
 import requests
 
+def check_info_source(url):
+    parsed_uri = urlparse(url)
+    domain = '{uri.netloc}'.format(uri=parsed_uri)
+    domain = domain.replace("www.", "")
+
+    sorces = pd.read_csv('sources.csv')
+    untrusted_sources = sorces['url'].tolist()
+
+    return int(domain not in untrusted_sources)
 
 def check_virality(url):
 
@@ -157,12 +168,17 @@ def check_virality(url):
         return -1,-1,-1,-1
 
     str =  "https://graph.facebook.com/v2.9/?id="+url+"&fields=engagement&access_token="+FB_TOKEN
-    res = requests.get(str)
-    out = res.json()
-    comments =out['engagement']['comment_count'] + out['engagement']['comment_plugin_count']
-    reaction =  out['engagement']['reaction_count']
-    share = out['engagement']['share_count']
-    total_engaged = comments+reaction+share
+    try:
+        res = requests.get(str)
+        out = res.json()
+        comments =out['engagement']['comment_count'] + out['engagement']['comment_plugin_count']
+        reaction =  out['engagement']['reaction_count']
+        share = out['engagement']['share_count']
+        total_engaged = comments+reaction+share
+    except:
+        return -1,-1,-1,-1
+
+
 
     return comments, reaction, share, total_engaged
 
