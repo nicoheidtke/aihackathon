@@ -11,8 +11,13 @@ import preprocessor as twprep
 twprep.set_options(twprep.OPT.URL, twprep.OPT.HASHTAG, twprep.OPT.MENTION, twprep.OPT.RESERVED, twprep.OPT.SMILEY, twprep.OPT.EMOJI)
 reload(sys)
 import config
+from urlparse import urlparse
+
 sys.setdefaultencoding('utf8')
 parser = English()
+
+SPLIT = True
+ENTITIES_TO_CONSIDER = ['PERSON', 'FACILITY', 'ORG', 'GPE', 'LOC', 'PRODUCT', 'EVENT', 'WORK_OF_ART', 'LANGUAGE']
 
 
 def read_csv_with_tweets(filename, regenerate=False,  bow=False):
@@ -45,9 +50,32 @@ def transform_tweet(tweet, bow=False):
                 clust_dict[cluster] += 1
             else:
                 clust_dict[cluster] = 1
-        output = [((entity.text, entity.label_, clust_dict)) for entity in entities]
+        output = [((entity.text, entity.label_, clust_dict)) for entity in entities if entity.label_ in ENTITIES_TO_CONSIDER]
     else:
-        output = [((entity.text, entity.label_, out_vector)) for entity in entities]
+
+        if SPLIT:
+            verb_vector = np.zeros([300])
+            noun_vector = np.zeros([300])
+            adj_vector = np.zeros([300])
+            verb_cnt = 0
+            noun_cnt = 0
+            adj_cnt = 0
+            for token in parsedEx:
+                if token.pos_ == 'VERB':
+                    verb_vector += token.vector
+                    verb_cnt += 1
+                elif token.pos_ == 'NOUN':
+                    noun_vector += token.vector
+                    noun_cnt += 1
+                elif token.pos_ == 'ADJ':
+                    adj_vector += token.vector
+                    adj_cnt += 1
+            verb_vector = 1. * verb_vector / (verb_cnt + 10**(-10))
+            noun_vector = 1. * noun_vector / (noun_cnt + 10**(-10))
+            adj_vector = 1. * adj_vector / (adj_cnt + 10**(-10))
+            output = [((entity.text, entity.label_, [verb_vector, noun_vector, adj_vector])) for entity in entities  if entity.label_ in ENTITIES_TO_CONSIDER]
+        else:
+            output = [((entity.text, entity.label_, out_vector)) for entity in entities  if entity.label_ in ENTITIES_TO_CONSIDER]
     # TODO: kick out entities that are useless e.g. DATE
     return output
 
@@ -86,7 +114,7 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
     transformed_tweet = transform_tweet(tweet, bow)
     scores = {}
     for i, (entity, entity_type, vector_array) in enumerate(transformed_tweet):
-        temp_score = 0
+        temp_score = 0.0
         for j, (tweetid, item) in enumerate(storage[storage['Entity'] == entity].iterrows()):
             if bow:
                 clusterids = np.unique([vector_array.keys() + item['Vector array'].keys()])
@@ -97,8 +125,18 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
                     vector2[k] = item['Vector array'].get(cid, 0)
                 temp_score = np.max([1.0 * np.sum(np.logical_and(vector1, vector2)) / np.min([np.sum(vector1), np.sum(vector2)]), temp_score])
             else:
-                temp_score = np.max([1 - cosine(vector_array, item['Vector array']), temp_score])
-                print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(tweetid))
+                if SPLIT:
+                    result = [1 - cosine(vector_array[x], item['Vector array'][x]) for x in range(3)]
+                    isnan = np.isnan(result)
+                    res = 0.0
+                    for v in range(3):
+                        if not isnan[v]:
+                            res+=result[v]
+                    res = 1.0 * res/(np.sum(isnan==False)+10**(-10))
+                    temp_score = np.max([res, temp_score])
+                else:
+                    temp_score = np.max([1 - cosine(vector_array, item['Vector array']), temp_score])
+                    print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(tweetid))
         scores.update({entity: temp_score})
     return combine_scores(scores)
 
@@ -114,6 +152,15 @@ def iterate_over_csv_and_put_into_storage(df_input, bow=False):
 
 import requests
 
+def check_info_source(url):
+    parsed_uri = urlparse(url)
+    domain = '{uri.netloc}'.format(uri=parsed_uri)
+    domain = domain.replace("www.", "")
+
+    sorces = pd.read_csv('sources.csv')
+    untrusted_sources = sorces['url'].tolist()
+
+    return int(domain not in untrusted_sources)
 
 def check_virality(url):
 
@@ -121,19 +168,24 @@ def check_virality(url):
         return -1,-1,-1,-1
 
     str =  "https://graph.facebook.com/v2.9/?id="+url+"&fields=engagement&access_token="+FB_TOKEN
-    res = requests.get(str)
-    out = res.json()
-    comments =out['engagement']['comment_count'] + out['engagement']['comment_plugin_count']
-    reaction =  out['engagement']['reaction_count']
-    share = out['engagement']['share_count']
-    total_engaged = comments+reaction+share
+    try:
+        res = requests.get(str)
+        out = res.json()
+        comments =out['engagement']['comment_count'] + out['engagement']['comment_plugin_count']
+        reaction =  out['engagement']['reaction_count']
+        share = out['engagement']['share_count']
+        total_engaged = comments+reaction+share
+    except:
+        return -1,-1,-1,-1
+
+
 
     return comments, reaction, share, total_engaged
 
 
 if __name__ == '__main__':
-    tweet_to_check = u'''Donald Trump is not fucking dead'''
-    regenerate = True
+    tweet_to_check = u'''Helmut Kohl died'''
+    regenerate = False
     bow = False
     df_storage = read_csv_with_tweets(os.path.join(config.data_folder, config.tweets_filename), regenerate=regenerate, bow=bow)
     scores = compare_tweet_with_storage(tweet_to_check, df_storage, bow=bow)
