@@ -1,8 +1,30 @@
 import pandas as pd
 import numpy as np
+import os
+import pickle
 from scipy.spatial.distance import cosine
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+# encoding=utf8
 from spacy.en import English
+import config
+
 parser = English()
+
+
+def read_csv_with_tweets(filename, regenerate=False):
+    if regenerate or not os.path.isfile(os.path.join(config.data_folder, config.model_file)):
+        # check if file exist
+        if os.path.isfile(os.path.join(config.data_folder, config.tweets_filename)):
+            df_storage = iterate_over_csv_and_put_into_storage(pd.read_csv(filename)[['text']])
+            pickle.dump(df_storage, open(os.path.join(config.data_folder, config.model_file), 'wb'), protocol=2)
+        else:
+            raise('Twitter file doesnt exist!')
+    else:
+        df_storage = pickle.load(open(os.path.join(config.data_folder, config.model_file), 'rb'))
+    return df_storage
+
 
 def transform_tweet(tweet):
     parsedEx = parser(tweet)
@@ -32,16 +54,24 @@ def compare_tweet_with_storage(tweet, storage):
         scores.update({entity: temp_score})
     return scores
 
+def iterate_over_csv_and_put_into_storage(df_input):
+    storage_df = pd.DataFrame(columns=['Entity', 'Entity type', 'Vector array'])
+    for i, tweet in df_input.iterrows():
+        print(i)
+        storage_df = put_gt_tweet_in_storage(tweet['text'].decode(), storage_df)
+    return storage_df
+
+
 if __name__ == '__main__':
     tweet_to_check = u"Donald Trump was murdered yesterday!"
-
-    tweets = [u"Donald Trump was killed yesterday!",
-              u"Donald Trump is gay",
-              u"Donald Trump killed his wife!",
-              u"Donald Trump launched a rocket and started a world war!"]
-    df = pd.DataFrame(columns=['Entity', 'Entity type', 'Vector array'])
-    for tweet in tweets:
-        df = put_gt_tweet_in_storage(tweet, df)
-    print(df.head())
-    scores = compare_tweet_with_storage(tweet_to_check, df)
+    regenerate = False
+    df_storage = read_csv_with_tweets(os.path.join(config.data_folder, config.tweets_filename), regenerate=regenerate)
+    scores = compare_tweet_with_storage(tweet_to_check, df_storage)
     print(scores)
+
+
+    # tweets = [u"Donald Trump was killed yesterday!",
+    #           u"Donald Trump was not killed yesterday!"
+    #           u"Donald Trump is gay",
+    #           u"Donald Trump killed his wife!",
+    #           u"Donald Trump launched a rocket and started a world war!"]
