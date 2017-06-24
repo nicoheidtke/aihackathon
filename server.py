@@ -22,7 +22,10 @@ def process_text():
 
         result = {
             'status': STATUS_OK,
-            'data': analysis_result
+            'data': {
+                'credibility': analysis_result
+            },
+            'source_text': tweet
         }
         return jsonify(result)
     except AssertionError:
