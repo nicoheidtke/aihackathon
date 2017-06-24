@@ -41,7 +41,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function verifySuccess(data) {
+function verifyTextSuccess(data) {
     var scores = data.data;
 
     var site_cred = scores.site_credibility;
@@ -67,7 +67,6 @@ function verifySuccess(data) {
     }
     
     var cls = truthinessClass[truthiness];
-    console.info(cls)
     $("#score_truthiness").toggleClass("label-default " + cls);
     //var msg = truthinessMessages[truthiness][getRandomInt(0, truthinessMessages[truthiness].length)];
     //$("#score_message").text(msg);
@@ -84,45 +83,61 @@ function verifySuccess(data) {
     }
 };
 
-function verifyFail(status, msg) {
+function verifyTextFail(status, msg) {
     $("#score_truthiness").text("error");
     $("#status_message").text("Truthiness calculation failed!");
     $("#error_message").text(status + ": " + JSON.stringify(msg));
     $("#status_alert").toggleClass("alert-info alert-danger");
 };
 
-function verify(query) {
+function verify_text(query) {
      $.ajax({
         url:"http://54.72.165.0:8080/process_text", 
         method: "POST",
         data: JSON.stringify(query),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
-        success: verifySuccess,
+        success: verifyTextSuccess,
     })
     .done(function() {})
     .fail(function(jqXHR, exception) {
-        verifyFail(jqXHR.status, jqXHR.statusText);
+        verifyTextFail(jqXHR.status, jqXHR.statusText);
+    })
+    .always(function() {});
+};
+
+function verify_image(query) {
+     $.ajax({
+        url:"http://54.72.165.0:8080/process_image", 
+        method: "POST",
+        data: JSON.stringify(query),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: verifyImageSuccess,
+    })
+    .done(function() {})
+    .fail(function(jqXHR, exception) {
+        verifyImageFail(jqXHR.status, jqXHR.statusText);
     })
     .always(function() {});
 };
 
 function on_dom_loaded(event) {
     $("#closeButton").click( function(){ self.close(); } );
-
-
     var pageUrl = getUrlParameter("pageUrl");
+     $("#page_url").text(pageUrl);
     var query = {"pageUrl": pageUrl} 
     var text = getUrlParameter("text");
     var image = getUrlParameter("image");
     if (text != null) {
-        query["text"] = text
+        query["text"] = text;
+        $("#source_item").text(text);
+        verify_text(query);
+    } else if (image != null) {
+        query["imageUrl"] = image;
+        $("#source_item").text(image);
+        verify_image(query);
     }
-    if (image != null) {
-        query["image"] = image
-    }
-    $("#source_url").text(pageUrl);
-    verify(query);
 };
 
 
