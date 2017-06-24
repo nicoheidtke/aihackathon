@@ -106,3 +106,4 @@ ENV/
 credentials.py
 *.csv
 *.pkl
+*.jpg
