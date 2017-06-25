@@ -118,16 +118,18 @@ function verify_image(query) {
 
 function on_dom_loaded(event) {
     $("#closeButton").click( function(){ self.close(); } );
-    var pageUrl = getUrlParameter("pageUrl");
+    var pageUrl = atob(getUrlParameter("pageUrl"));
      $("#page_url").text(pageUrl);
     var query = {"pageUrl": pageUrl} 
     var text = getUrlParameter("text");
     var image = getUrlParameter("image");
     if (text != null) {
+        text = atob(text);
         query["text"] = text;
         $("#source_item").text(text);
         verify_text(query);
     } else if (image != null) {
+        image = atob(image);
         query["imageUrl"] = image;
         $("#source_item").text(image);
         $("#source_img").attr("src",image);

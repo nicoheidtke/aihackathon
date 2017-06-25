@@ -2,7 +2,7 @@
 
 function getImageClickHandler() {
   return function(info, tab) {
-    var query = {"image": info.srcUrl, "pageUrl": info.frameUrl ? info.frameUrl : info.pageUrl};
+    var query = {"image": btoa(info.srcUrl), "pageUrl": btoa(info.frameUrl ? info.frameUrl : info.pageUrl)};
     var url = "verify.html?" + $.param( query );
     chrome.windows.create({ url: url, width: 600, height: 400, type: "popup" });
   };
@@ -10,7 +10,7 @@ function getImageClickHandler() {
 
 function getSelectedTextHandler() {
   return function(info, tab) {
-    var query = {"text": info.selectionText, "pageUrl": info.pageUrl};
+    var query = {"text": btoa(info.selectionText), "pageUrl": btoa(info.pageUrl)};
     var url = "verify.html?" + $.param( query );
     chrome.windows.create({ url: url, width: 600, height: 400, type: "popup" });
   };
