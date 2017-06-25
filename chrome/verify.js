@@ -53,8 +53,8 @@ function verifyTextSuccess(data) {
     }
 
     $("#panel_score").show();
-    $("#status_message").text("Truthiness results are in!");
-    $("#status_alert").toggleClass("alert-info alert-success");
+    $("#status_message").hide()
+    $("#status_alert").hide();
     $("#score_truthiness").text(credibility);
     var truthiness = 0;
     for (truthiness = 0; truthiness < truthinessArray.length; truthiness++) {
