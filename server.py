@@ -55,14 +55,16 @@ def process_image():
         assert 'imageUrl' in request.json
 
         image_url = request.json['imageUrl']
-        found_trusted_url = None
+        trusted_source_url, trusted_source_image = None, None
         trusted_data = check_url(image_url)
         if trusted_data is not None and 'image_url' in trusted_data:
-            found_trusted_url = trusted_data.image_url
+            trusted_source_image = trusted_data.image_url
+            trusted_source_url = trusted_data.url
 
         result = {
             'status': STATUS_OK,
-            'found_trusted_url': found_trusted_url,
+            'trusted_source_url': trusted_source_url,
+            'trusted_source_image': trusted_source_image,
             'source_url': image_url
         }
         return jsonify(result)
