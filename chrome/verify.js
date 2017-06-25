@@ -1,19 +1,3 @@
-var truthinessMessages = {
-    0: [
-        "Did you know the earth is flat too?",
-    ],
-    1: [
-        "Believe on your risk."
-    ],
-    2: [
-        "The truth is usually boring."
-    ],
-    3: [
-        "You better believe it!",
-        "True as long as the pope is catholic."
-    ]
-};
-
 var truthinessClass = {
     0: "alert-danger",
     1: "alert-warning",
@@ -41,7 +25,18 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function verifySuccess(data) {
+function verifyImageSuccess(data) {
+    var trusted_url = data.trusted_source_url;
+    if (trusted_url) {
+        $("#status_message").html('<a href="' + trusted_url + '">Click here for a trusted source for this image!</a>');
+        $("#status_alert").toggleClass("alert-info alert-success");
+    } else {
+        $("#status_message").text("This image was not found on trusted sources!");
+        $("#status_alert").toggleClass("alert-info alert-warning");
+    }
+}
+
+function verifyTextSuccess(data) {
     var scores = data.data;
 
     var site_cred = scores.site_credibility;
@@ -57,6 +52,7 @@ function verifySuccess(data) {
         return;
     }
 
+    $("#panel_score").show();
     $("#status_message").text("Truthiness results are in!");
     $("#status_alert").toggleClass("alert-info alert-success");
     $("#score_truthiness").text(credibility);
@@ -67,10 +63,7 @@ function verifySuccess(data) {
     }
     
     var cls = truthinessClass[truthiness];
-    console.info(cls)
     $("#score_truthiness").toggleClass("label-default " + cls);
-    //var msg = truthinessMessages[truthiness][getRandomInt(0, truthinessMessages[truthiness].length)];
-    //$("#score_message").text(msg);
 
     var shares = scores.shares;
     if (shares >= 0) {
@@ -91,14 +84,30 @@ function verifyFail(status, msg) {
     $("#status_alert").toggleClass("alert-info alert-danger");
 };
 
-function verify(query) {
+function verify_text(query) {
      $.ajax({
         url:"http://54.72.165.0:8080/process_text", 
         method: "POST",
         data: JSON.stringify(query),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
-        success: verifySuccess,
+        success: verifyTextSuccess,
+    })
+    .done(function() {})
+    .fail(function(jqXHR, exception) {
+        verifyFail(jqXHR.status, jqXHR.statusText);
+    })
+    .always(function() {});
+};
+
+function verify_image(query) {
+     $.ajax({
+        url:"http://54.72.165.0:8080/process_image", 
+        method: "POST",
+        data: JSON.stringify(query),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: verifyImageSuccess,
     })
     .done(function() {})
     .fail(function(jqXHR, exception) {
@@ -109,20 +118,22 @@ function verify(query) {
 
 function on_dom_loaded(event) {
     $("#closeButton").click( function(){ self.close(); } );
-
-
     var pageUrl = getUrlParameter("pageUrl");
+     $("#page_url").text(pageUrl);
     var query = {"pageUrl": pageUrl} 
     var text = getUrlParameter("text");
     var image = getUrlParameter("image");
     if (text != null) {
-        query["text"] = text
+        query["text"] = text;
+        $("#source_item").text(text);
+        verify_text(query);
+    } else if (image != null) {
+        query["imageUrl"] = image;
+        $("#source_item").text(image);
+        $("#source_img").attr("src",image);
+        $("#source_img").show();
+        verify_image(query);
     }
-    if (image != null) {
-        query["image"] = image
-    }
-    $("#source_url").text(pageUrl);
-    verify(query);
 };
 
 

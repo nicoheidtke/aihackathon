@@ -17,14 +17,14 @@ function getSelectedTextHandler() {
 };
 
 chrome.contextMenus.create({
-  "title" : "Verify image",
+  "title" : "Image truthiness",
   "type" : "normal",
   "contexts" : ["image"],
   "onclick" : getImageClickHandler()
 });
 
 chrome.contextMenus.create({
-  "title" : "Verify text",
+  "title" : "Text truthiness",
   "type" : "normal",
   "contexts" : ["selection"],
   "onclick" : getSelectedTextHandler()
