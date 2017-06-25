@@ -112,6 +112,7 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
             storage = pickle.load(open(os.path.join(config.data_folder, config.model_file), 'rb'))
 
     transformed_tweet = transform_tweet(tweet, bow)
+    print([x[0] for x in transformed_tweet], [np.sum(y) for y in (x[2] for x in transformed_tweet)])
     scores = {}
     for i, (entity, entity_type, vector_array) in enumerate(transformed_tweet):
         temp_score = 0.0
@@ -134,7 +135,7 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
                             res+=result[v]
                     res = 1.0 * res/(np.sum(isnan==False)+10**(-10))
                     temp_score = np.max([res, temp_score])
-                    print(entity, entity_type)
+                    # print(entity, entity_type)
                 else:
                     temp_score = np.max([1 - cosine(vector_array, item['Vector array']), temp_score])
                     print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(tweetid))
