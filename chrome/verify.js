@@ -55,7 +55,7 @@ function verifyTextSuccess(data) {
     $("#panel_score").show();
     $("#status_message").hide()
     $("#status_alert").hide();
-    $("#score_truthiness").text(credibility);
+    $("#score_truthiness").text(Math.round(credibility*100) + " %");
     var truthiness = 0;
     for (truthiness = 0; truthiness < truthinessArray.length; truthiness++) {
         if (truthinessArray[truthiness] > credibility)
