@@ -37,6 +37,7 @@ def transform_tweet(tweet, bow=False):
     parsedEx = parser(tweet.decode()) # .decode()
     tokens = [token.text for token in parsedEx if token.text not in config.STOPLIST and token.text not in config.SYMBOLS]
     tweet = " ".join(tokens)
+    print('Tokenizer:', tweet)
     parsedEx = parser(tweet.decode()) # .decode()
     print(parsedEx)
     #TODO: handle, de-hashtag
@@ -110,7 +111,7 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
             raise('Model was not found!')
         else:
             storage = pickle.load(open(os.path.join(config.data_folder, config.model_file), 'rb'))
-
+    print(tweet)
     transformed_tweet = transform_tweet(tweet, bow)
     print([x[0] for x in transformed_tweet], [np.sum(y) for y in (x[2] for x in transformed_tweet)])
     scores = {}
