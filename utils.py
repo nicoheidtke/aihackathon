@@ -134,6 +134,7 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
                             res+=result[v]
                     res = 1.0 * res/(np.sum(isnan==False)+10**(-10))
                     temp_score = np.max([res, temp_score])
+                    print(entity, entity_type)
                 else:
                     temp_score = np.max([1 - cosine(vector_array, item['Vector array']), temp_score])
                     print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(tweetid))
@@ -184,7 +185,7 @@ def check_virality(url):
 
 
 if __name__ == '__main__':
-    tweet_to_check = u'''Helmut Kohl died'''
+    tweet_to_check = u'''Pakistan oil tanker inferno kills at least 123'''
     regenerate = False
     bow = False
     df_storage = read_csv_with_tweets(os.path.join(config.data_folder, config.tweets_filename), regenerate=regenerate, bow=bow)
