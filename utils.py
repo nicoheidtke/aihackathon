@@ -37,6 +37,7 @@ def transform_tweet(tweet, bow=False):
     parsedEx = parser(tweet.decode()) # .decode()
     tokens = [token.text for token in parsedEx if token.text not in config.STOPLIST and token.text not in config.SYMBOLS]
     tweet = " ".join(tokens)
+    print('Tokenizer:', tweet)
     parsedEx = parser(tweet.decode()) # .decode()
     print(parsedEx)
     #TODO: handle, de-hashtag
@@ -110,8 +111,9 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
             raise('Model was not found!')
         else:
             storage = pickle.load(open(os.path.join(config.data_folder, config.model_file), 'rb'))
-
+    print(tweet)
     transformed_tweet = transform_tweet(tweet, bow)
+    print([x[0] for x in transformed_tweet], [np.sum(y) for y in (x[2] for x in transformed_tweet)])
     scores = {}
     for i, (entity, entity_type, vector_array) in enumerate(transformed_tweet):
         temp_score = 0.0
@@ -134,6 +136,7 @@ def compare_tweet_with_storage(tweet, storage=None, bow=False):
                             res+=result[v]
                     res = 1.0 * res/(np.sum(isnan==False)+10**(-10))
                     temp_score = np.max([res, temp_score])
+                    # print(entity, entity_type)
                 else:
                     temp_score = np.max([1 - cosine(vector_array, item['Vector array']), temp_score])
                     print(1 - cosine(vector_array, item['Vector array']), entity, tweet, str(tweetid))
@@ -184,7 +187,7 @@ def check_virality(url):
 
 
 if __name__ == '__main__':
-    tweet_to_check = u'''Helmut Kohl died'''
+    tweet_to_check = u'''Pakistan oil tanker inferno kills at least 123'''
     regenerate = False
     bow = False
     df_storage = read_csv_with_tweets(os.path.join(config.data_folder, config.tweets_filename), regenerate=regenerate, bow=bow)
