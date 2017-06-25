@@ -129,7 +129,7 @@ function on_dom_loaded(event) {
         $("#source_item").text(text);
         verify_text(query);
     } else if (image != null) {
-        image = atob(image);
+        image = decodeURIComponent(escapeatob(image));
         query["imageUrl"] = image;
         $("#source_item").text(image);
         $("#source_img").attr("src",image);
