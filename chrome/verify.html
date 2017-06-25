@@ -10,12 +10,24 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .panel-body {
+        padding-top: 0px;
+      }
+      .alert {
+        padding-top: 4px;
+        padding-bottom: 4px;
+      }
+    </style>
   </head>
   <body>
-    <div class="container" role="main" >
+    <div class="container-fluid" role="main" >
       <div id="status_alert" class="alert alert-info">
         <strong id="status_message">Analysis in progess. Please wait</strong>
-        <p><h5 id="error_message"></h5></p>
+        <h5 id="error_message"></h5>
+      </div>
+      <div id="site_alert" class="alert alert-warning" hidden="hidden">
+        <strong>This site is known to be untrustworthy.</strong>
       </div>
       <div>
         <h5><span id="page_url" class="label label-info"></span></h5>
@@ -23,17 +35,14 @@
       <div>
         <h5><span id="source_item" class="label label-info"></span></h5>
       </div>
-      <div id="site_alert" class="alert alert-warning" hidden="hidden">
-        <strong>This site is known to be untrustworthy.</strong>
-      </div>
       <div class="row">
         <div class="col-xs-4"  >
-          <div class="panel panel-primary"  >
+          <div id="panel_score" class="panel panel-primary" hidden="hidden" >
             <div class="panel-heading"  >
               <h3 class="panel-title" >Score</h3>
             </div>
             <div class="panel-body"  >
-              <h4><span id="score_truthiness" class="label label-default"></span></h4>
+              <h2><span id="score_truthiness" class="label label-default"></span></h2>
             </div>
           </div>
         </div>
@@ -43,7 +52,7 @@
               <h3 class="panel-title" ># users shared</h3>
             </div>
             <div class="panel-body">
-              <h4><span id="score_shares" class="label label-default"></span></h4>
+              <h2><span id="score_shares" class="label label-default"></span></h2>
             </div>
           </div>
         </div>
@@ -53,7 +62,7 @@
               <h3 class="panel-title" ># users engaged</h3>
             </div>
             <div class="panel-body">
-              <h4><span id="score_engaged" class="label label-default"></span></h4>
+              <h2><span id="score_engaged" class="label label-default"></span></h2>
             </div>
           </div>
         </div>

@@ -1,19 +1,3 @@
-var truthinessMessages = {
-    0: [
-        "Did you know the earth is flat too?",
-    ],
-    1: [
-        "Believe on your risk."
-    ],
-    2: [
-        "The truth is usually boring."
-    ],
-    3: [
-        "You better believe it!",
-        "True as long as the pope is catholic."
-    ]
-};
-
 var truthinessClass = {
     0: "alert-danger",
     1: "alert-warning",
@@ -41,6 +25,17 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function verifyImageSuccess(data) {
+    var trusted_url = data.trusted_source_url;
+    if (trusted_url) {
+        $("#status_message").html('<a href="' + trusted_url + '">Click here for a trusted source for this image!</a>');
+        $("#status_alert").toggleClass("alert-info alert-success");
+    } else {
+        $("#status_message").text("This image was not found on trusted sources!");
+        $("#status_alert").toggleClass("alert-info alert-warning");
+    }
+}
+
 function verifyTextSuccess(data) {
     var scores = data.data;
 
@@ -57,6 +52,7 @@ function verifyTextSuccess(data) {
         return;
     }
 
+    $("#panel_score").show();
     $("#status_message").text("Truthiness results are in!");
     $("#status_alert").toggleClass("alert-info alert-success");
     $("#score_truthiness").text(credibility);
@@ -68,8 +64,6 @@ function verifyTextSuccess(data) {
     
     var cls = truthinessClass[truthiness];
     $("#score_truthiness").toggleClass("label-default " + cls);
-    //var msg = truthinessMessages[truthiness][getRandomInt(0, truthinessMessages[truthiness].length)];
-    //$("#score_message").text(msg);
 
     var shares = scores.shares;
     if (shares >= 0) {
@@ -83,7 +77,7 @@ function verifyTextSuccess(data) {
     }
 };
 
-function verifyTextFail(status, msg) {
+function verifyFail(status, msg) {
     $("#score_truthiness").text("error");
     $("#status_message").text("Truthiness calculation failed!");
     $("#error_message").text(status + ": " + JSON.stringify(msg));
@@ -101,7 +95,7 @@ function verify_text(query) {
     })
     .done(function() {})
     .fail(function(jqXHR, exception) {
-        verifyTextFail(jqXHR.status, jqXHR.statusText);
+        verifyFail(jqXHR.status, jqXHR.statusText);
     })
     .always(function() {});
 };
@@ -117,7 +111,7 @@ function verify_image(query) {
     })
     .done(function() {})
     .fail(function(jqXHR, exception) {
-        verifyImageFail(jqXHR.status, jqXHR.statusText);
+        verifyFail(jqXHR.status, jqXHR.statusText);
     })
     .always(function() {});
 };
@@ -136,6 +130,8 @@ function on_dom_loaded(event) {
     } else if (image != null) {
         query["imageUrl"] = image;
         $("#source_item").text(image);
+        $("#source_img").attr("src",image);
+        $("#source_img").show();
         verify_image(query);
     }
 };
