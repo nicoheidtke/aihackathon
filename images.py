@@ -5,18 +5,19 @@ import io
 import cv2
 import requests
 
-search_url = "https://www3.arche.blue/mvp5/v1/1030/search"
-fast_search_url = "https://www3.arche.blue/mvp5/v1/1030/fastSearch"
+search_url = "https://www3.arche.blue/mvp5/v1/1029/search"
+fast_search_url = "https://www3.arche.blue/mvp5/v1/1029/fastSearch"
 tweet_imgs = pd.read_csv('data/enriched_tweets1part.csv')
 
 trained_files = [
+    '0000000',
     '0000004',
     '0000001',
     '0000006',
     '0000002',
     '0000008',
     '0000007',
-    '0000000',
+    '0000050',
     '0000011',
     '0000009',
     '0000016',
