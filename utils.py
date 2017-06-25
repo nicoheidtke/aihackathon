@@ -34,7 +34,9 @@ def read_csv_with_tweets(filename, regenerate=False,  bow=False):
 
 def transform_tweet(tweet, bow=False):
     # tweet = twprep.clean(tweet)
+    print('Before:', tweet)
     parsedEx = parser(tweet.decode()) # .decode()
+    print('Parsed:', tweet)
     tokens = [token.text for token in parsedEx if token.text not in config.STOPLIST and token.text not in config.SYMBOLS]
     tweet = " ".join(tokens)
     print('Tokenizer:', tweet)
