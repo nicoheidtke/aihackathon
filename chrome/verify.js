@@ -86,7 +86,7 @@ function verifyFail(status, msg) {
 
 function verify_text(query) {
      $.ajax({
-        url:"http://54.72.165.0:8080/process_text", 
+        url:"http://54.77.106.114:8080/process_text", 
         method: "POST",
         data: JSON.stringify(query),
         contentType: "application/json; charset=utf-8",
@@ -102,7 +102,7 @@ function verify_text(query) {
 
 function verify_image(query) {
      $.ajax({
-        url:"http://54.72.165.0:8080/process_image", 
+        url:"http://54.77.106.114:8080/process_image", 
         method: "POST",
         data: JSON.stringify(query),
         contentType: "application/json; charset=utf-8",
