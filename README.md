@@ -1,7 +1,8 @@
 # aihackathon
-Team repo for hackathon
+Truthicator is a chrome extension that can classify fake news site, texts and find the original sources of images in the web.
+It was created as part of the NEC fake news challenge for the Global AI Hackathon 2017.
 
-Chrome installatuion guide:
+Chrome installation guide:
 
 1. Clone the repository.
 'git clone https://github.com/nicoheidtke/aihackathon.git'
@@ -23,10 +24,19 @@ Usage example:
 
 	http://www.presstv.ir/Detail/2017/06/24/526350/Russia-Alexei-Navalny-presidential-election-ban
 
-	http://www.bbc.com/news/world-south-asia-40396036
+	http://www.bbc.com/news/world-south-asia-40396036 
 
-	http://www.newsmutiny.com/pages/Immigrant-Kids-Jobs.html
+	http://www.newsmutiny.com/pages/Immigrant-Kids-Jobs.html 
 
 	http://www.businessinsider.de/trump-russia-news-trump-admits-election-interference-blames-obama-2017-6?r=US&IR=T
 
 2. Select a text or an image, then right click and then choose to check it. Ther result will appear in popup.
+
+
+The Truthicator Munich Hackathon 2017 team:
+  Dmitrii Budylskii
+  Ivan Tankoyeu
+  Nick Frangiadakis
+  Nico Heidtke
+  Olivier Boissard
+  Sergey Sukhanov
