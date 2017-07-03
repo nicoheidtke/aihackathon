@@ -3,7 +3,7 @@ Truthicator is a chrome extension that can classify fake news site, texts and fi
 It was created as part of the [NEC](http://www.nec.com/) fake news challenge for the [Global AI Hackathon 2017](http://ai.hackathon.com/).
 
 Presentation [on Google Slides](https://docs.google.com/presentation/d/1pQ9_X63lCJ8qL5IGK-8kNsw9GF_VzV6mQOG3cx2LihQ/edit?usp=sharing)
-and [in pdf .format](https://github.com/nicoheidtke/aihackathon/blob/master/truthicator_slides.pdf)
+and [in pdf format](https://github.com/nicoheidtke/aihackathon/blob/master/truthicator_slides.pdf)
 
 Chrome extension installation guide:
 
